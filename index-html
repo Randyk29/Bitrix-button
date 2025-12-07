@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Deal ID Widget</title>
+    <script src="https://api.bitrix24.com/api/v1/"></script>
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .deal-id {
+            font-size: 48px;
+            font-weight: bold;
+            color: #2fc6f6;
+            text-align: center;
+            padding: 20px;
+            margin: 20px 0;
+            background: #f0f9ff;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="deal-id" id="dealId">Loading...</div>
+    
+    <script>
+    BX24.init(function() {
+        // Deal-ID aus verschiedenen Quellen holen
+        let dealId = BX24.getParam('ID') || 
+                     BX24.getParam('deal_id') || 
+                     getDealIdFromUrl();
+        
+        if (dealId) {
+            document.getElementById('dealId').textContent = dealId;
+            document.getElementById('dealId').onclick = function() {
+                navigator.clipboard.writeText(dealId);
+                alert('Deal-ID ' + dealId + ' kopiert!');
+            };
+        } else {
+            document.getElementById('dealId').textContent = 'Keine ID gefunden';
+        }
+    });
+    
+    function getDealIdFromUrl() {
+        const url = window.location.href;
+        const match = url.match(/[\?&]ID=(\d+)/);
+        return match ? match[1] : null;
+    }
+    </script>
+</body>
+</html>
